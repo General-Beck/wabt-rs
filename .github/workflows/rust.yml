@@ -107,11 +107,11 @@ jobs:
       RUST_BACKTRACE:  full
     steps:
       - name:          Set default compiler
-        if:            matrix.compiler == 'clang'
+        if:            matrix.compiler == 'clang' && matrix.platform != 'windows-latest'
         run:           echo "::set-env name=CC::clang"&&echo "::set-env name=CXX::clang++"
       - name:          Install LLVM for Windows
-        if:            matrix.platform == 'windows-latest'  && matrix.compiler == 'clang'
-        run:           choco install llvm
+        if:            matrix.platform == 'windows-latest' && matrix.compiler == 'clang'
+        run: choco install llvm
       - name:          Checkout sources & submodules
         uses:          actions/checkout@master
         with:
