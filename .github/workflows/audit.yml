@@ -1,7 +1,7 @@
 name: Security audit
 on:
   pull_request:
-    paths: Cargo.lock
+    paths: Cargo.toml
   schedule:
     - cron: '0 0 * * *'
 jobs:
