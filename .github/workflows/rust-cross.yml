@@ -17,7 +17,6 @@ jobs:
       matrix:
         toolchain:
           - stable
-          - beta
           - nightly
         target:        #List of [supported targets](https://github.com/rust-embedded/cross#supported-targets)
           - aarch64-unknown-linux-gnu
@@ -91,7 +90,6 @@ jobs:
       matrix:
         toolchain:
           - stable
-          - beta
           - nightly
         target:        #List of [supported targets](https://github.com/rust-embedded/cross#supported-targets)
           - aarch64-unknown-linux-gnu
