@@ -34,7 +34,7 @@ jobs:
         run:           echo "::set-env name=CC::clang"&&echo "::set-env name=CXX::clang++"
       - name:          Install LLVM for Windows
         if:            matrix.platform == 'windows-latest'  && matrix.compiler == 'clang'
-        run:           choco install llvm
+        run:           choco install llvm&& echo "::set-env name=CC::clang-cl.exe"&&echo "::set-env name=CXX::clang-cl.exe"&&refreshenv&&printenv
       - name:          Checkout sources & submodules
         uses:          actions/checkout@master
         with:
