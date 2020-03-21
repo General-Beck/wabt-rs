@@ -1,7 +1,7 @@
 name:                  Check, Test and Build cross-compilation Suite
 
 on:
-  pull_request:
+#  pull_request:
   push:
     branches:
       - master
@@ -27,6 +27,7 @@ jobs:
     runs-on:           ubuntu-latest
     env:
       RUST_BACKTRACE:  full
+      CARGO_HOME:      $HOME/.cargo
     steps:
       - name:          Checkout sources & submodules
         uses:          actions/checkout@master
@@ -46,7 +47,6 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
-          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
           chmod -R a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
@@ -100,6 +100,7 @@ jobs:
     runs-on:           ubuntu-latest
     env:
       RUST_BACKTRACE:  full
+      CARGO_HOME:      $HOME/.cargo
     steps:
       - name:          Checkout sources & submodules
         uses:          actions/checkout@master
@@ -119,7 +120,6 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
-          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
           chmod -R a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
@@ -173,6 +173,7 @@ jobs:
     runs-on:           ubuntu-latest
     env:
       RUST_BACKTRACE:  full
+      CARGO_HOME:      $HOME/.cargo
       RUSTFLAGS:       "-C link-arg=-s" #Strip binaries
     steps:
       - name:          Checkout sources & submodules
@@ -193,7 +194,6 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
-          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
           chmod -R a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry

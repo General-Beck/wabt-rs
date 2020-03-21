@@ -28,16 +28,17 @@ jobs:
     runs-on:           ${{ matrix.platform }}
     env:
       RUST_BACKTRACE:  full
+      CARGO_HOME:      $HOME/.cargo
     steps:
       - name:          Set default compiler
         if:            matrix.compiler == 'clang' && matrix.platform != 'windows-latest'
-        run:           echo "::set-env name=CC::clang"&&echo "::set-env name=CXX::clang++"
+        run:           echo ::set-env name=CC::clang"&&echo "::set-env name=CXX::clang++
       - name:          Install LLVM for Windows
         if:            matrix.platform == 'windows-latest'  && matrix.compiler == 'clang'
         run:           |
           choco install llvm
-          echo "::set-env name=CC::clang-cl.exe"
-          echo "::set-env name=CXX::clang-cl.exe"
+          echo ::set-env name=CC::clang-cl.exe
+          echo ::set-env name=CXX::clang-cl.exe
           refreshenv
           printenv
       - name:          Checkout sources & submodules
@@ -57,8 +58,10 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.compiler }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
-          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
-          chmod -R a+w $CARGO_HOME
+          echo ::set-env name=CARGO_HOME::$HOME/.cargo
+          echo "CARGO_HOME" $CARGO_HOME
+          echo "RUSTUP_HOME" $RUSTUP_HOME
+          chmod -Rс a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
@@ -112,6 +115,7 @@ jobs:
     runs-on:           ${{ matrix.platform }}
     env:
       RUST_BACKTRACE:  full
+      CARGO_HOME:      $HOME/.cargo
     steps:
       - name:          Set default compiler
         if:            matrix.compiler == 'clang' && matrix.platform != 'windows-latest'
@@ -141,8 +145,9 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.compiler }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
-          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
-          chmod -R a+w $CARGO_HOME
+          echo "CARGO_HOME" $CARGO_HOME
+          echo "RUSTUP_HOME" $RUSTUP_HOME
+          chmod -Rc a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
@@ -202,6 +207,7 @@ jobs:
     runs-on:           ${{ matrix.platform }}
     env:
       RUST_BACKTRACE:  full
+      CARGO_HOME:      $HOME/.cargo
       # NOTE:          Enables the aes-ni instructions for RustCrypto dependency.
       # Strip binaries
       # If you change this please remember to also update .cargo/config
@@ -235,7 +241,6 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.compiler }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
-          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
           chmod -R a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
