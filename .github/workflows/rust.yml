@@ -29,12 +29,19 @@ jobs:
     env:
       RUST_BACKTRACE:  full
     steps:
+      - name:          Set CARGO_HOME
+        run: echo "::set-env name=CARGO_HOME::$HOME/.cargo"
       - name:          Set default compiler
-        if:            matrix.compiler == 'clang'
+        if:            matrix.compiler == 'clang' && matrix.platform != 'windows-latest'
         run:           echo "::set-env name=CC::clang"&&echo "::set-env name=CXX::clang++"
       - name:          Install LLVM for Windows
         if:            matrix.platform == 'windows-latest'  && matrix.compiler == 'clang'
-        run:           choco install llvm&& echo "::set-env name=CC::clang-cl.exe"&&echo "::set-env name=CXX::clang-cl.exe"&&refreshenv&&printenv
+        run: |
+        choco install llvm
+        echo "::set-env name=CC::clang-cl.exe"
+        echo "::set-env name=CXX::clang-cl.exe"
+        refreshenv
+        printenv
       - name:          Checkout sources & submodules
         uses:          actions/checkout@master
         with:
@@ -110,8 +117,13 @@ jobs:
         if:            matrix.compiler == 'clang' && matrix.platform != 'windows-latest'
         run:           echo "::set-env name=CC::clang"&&echo "::set-env name=CXX::clang++"
       - name:          Install LLVM for Windows
-        if:            matrix.platform == 'windows-latest' && matrix.compiler == 'clang'
-        run: choco install llvm && echo "::set-env name=CC::clang-cl.exe"&&echo "::set-env name=CXX::clang-cl.exe"&&refreshenv&&printenv
+        if:            matrix.platform == 'windows-latest'  && matrix.compiler == 'clang'
+        run: |
+        choco install llvm
+        echo "::set-env name=CC::clang-cl.exe"
+        echo "::set-env name=CXX::clang-cl.exe"
+        refreshenv
+        printenv
       - name:          Checkout sources & submodules
         uses:          actions/checkout@master
         with:
@@ -194,11 +206,16 @@ jobs:
       RUSTFLAGS:       "-C target-feature=+aes,+sse2,+ssse3 -C link-arg=-s"
     steps:
       - name:          Set default compiler
-        if:            matrix.compiler == 'clang'
+        if:            matrix.compiler == 'clang' && matrix.platform != 'windows-latest'
         run:           echo "::set-env name=CC::clang"&&echo "::set-env name=CXX::clang++"
       - name:          Install LLVM for Windows
         if:            matrix.platform == 'windows-latest'  && matrix.compiler == 'clang'
-        run:           choco install llvm
+        run: |
+        choco install llvm
+        echo "::set-env name=CC::clang-cl.exe"
+        echo "::set-env name=CXX::clang-cl.exe"
+        refreshenv
+        printenv
       - name:          Checkout sources & submodules
         uses:          actions/checkout@master
         with:
