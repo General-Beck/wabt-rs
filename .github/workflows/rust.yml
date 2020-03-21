@@ -29,19 +29,17 @@ jobs:
     env:
       RUST_BACKTRACE:  full
     steps:
-      - name:          Set CARGO_HOME
-        run: echo "::set-env name=CARGO_HOME::$HOME/.cargo"
       - name:          Set default compiler
         if:            matrix.compiler == 'clang' && matrix.platform != 'windows-latest'
         run:           echo "::set-env name=CC::clang"&&echo "::set-env name=CXX::clang++"
       - name:          Install LLVM for Windows
         if:            matrix.platform == 'windows-latest'  && matrix.compiler == 'clang'
-        run: |
-        choco install llvm
-        echo "::set-env name=CC::clang-cl.exe"
-        echo "::set-env name=CXX::clang-cl.exe"
-        refreshenv
-        printenv
+        run:           |
+          choco install llvm
+          echo "::set-env name=CC::clang-cl.exe"
+          echo "::set-env name=CXX::clang-cl.exe"
+          refreshenv
+          printenv
       - name:          Checkout sources & submodules
         uses:          actions/checkout@master
         with:
@@ -59,6 +57,8 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.compiler }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
+          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
+          chmod -R a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
@@ -118,12 +118,12 @@ jobs:
         run:           echo "::set-env name=CC::clang"&&echo "::set-env name=CXX::clang++"
       - name:          Install LLVM for Windows
         if:            matrix.platform == 'windows-latest'  && matrix.compiler == 'clang'
-        run: |
-        choco install llvm
-        echo "::set-env name=CC::clang-cl.exe"
-        echo "::set-env name=CXX::clang-cl.exe"
-        refreshenv
-        printenv
+        run:           |
+          choco install llvm
+          echo "::set-env name=CC::clang-cl.exe"
+          echo "::set-env name=CXX::clang-cl.exe"
+          refreshenv
+          printenv
       - name:          Checkout sources & submodules
         uses:          actions/checkout@master
         with:
@@ -141,6 +141,8 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.compiler }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
+          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
+          chmod -R a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
@@ -200,7 +202,7 @@ jobs:
     runs-on:           ${{ matrix.platform }}
     env:
       RUST_BACKTRACE:  full
-      # NOTE: Enables the aes-ni instructions for RustCrypto dependency.
+      # NOTE:          Enables the aes-ni instructions for RustCrypto dependency.
       # Strip binaries
       # If you change this please remember to also update .cargo/config
       RUSTFLAGS:       "-C target-feature=+aes,+sse2,+ssse3 -C link-arg=-s"
@@ -210,12 +212,12 @@ jobs:
         run:           echo "::set-env name=CC::clang"&&echo "::set-env name=CXX::clang++"
       - name:          Install LLVM for Windows
         if:            matrix.platform == 'windows-latest'  && matrix.compiler == 'clang'
-        run: |
-        choco install llvm
-        echo "::set-env name=CC::clang-cl.exe"
-        echo "::set-env name=CXX::clang-cl.exe"
-        refreshenv
-        printenv
+        run:           |
+          choco install llvm
+          echo "::set-env name=CC::clang-cl.exe"
+          echo "::set-env name=CXX::clang-cl.exe"
+          refreshenv
+          printenv
       - name:          Checkout sources & submodules
         uses:          actions/checkout@master
         with:
@@ -233,6 +235,8 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.compiler }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
+          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
+          chmod -R a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
@@ -268,11 +272,11 @@ jobs:
       - name:          Stop sccache
         if:            always()
         run:           sccache --stop-server
-      - name:         Prepare artifact's
-        run:    .github/workflows/prepare_artifacts.sh ""
-        shell:  bash
-      - name:   Upload artifact's
-        uses:   actions/upload-artifact@v1
+      - name:          Prepare artifact's
+        run:           .github/workflows/prepare_artifacts.sh ""
+        shell:         bash
+      - name:          Upload artifact's
+        uses:          actions/upload-artifact@v1
         with:
-          name: ${{ matrix.platform }}.${{ matrix.toolchain }}.${{ matrix.compiler }}.zip
-          path: artifacts/
+          name:        ${{ matrix.platform }}.${{ matrix.toolchain }}.${{ matrix.compiler }}.zip
+          path:        artifacts/

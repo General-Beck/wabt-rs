@@ -47,6 +47,8 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
+          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
+          chmod -R a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
@@ -119,6 +121,8 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
+          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
+          chmod -R a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
@@ -191,6 +195,8 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
+          echo "::set-env name=CARGO_HOME::$HOME/.cargo"
+          chmod -R a+w $CARGO_HOME
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
