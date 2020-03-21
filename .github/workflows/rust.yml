@@ -62,7 +62,7 @@ jobs:
           echo "CARGO_HOME" ${{ env['CARGO_HOME'] }}
           echo "RUSTUP_HOME" $RUSTUP_HOME
           ls -a $HOME
-          chmod -Rс a+w $HOME/.cargo
+          chmod -R a+w $HOME/.cargo
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
