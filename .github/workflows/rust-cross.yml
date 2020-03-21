@@ -19,12 +19,13 @@ jobs:
           - stable
           - nightly
         target:        #List of [supported targets](https://github.com/rust-embedded/cross#supported-targets)
-          - aarch64-unknown-linux-gnu
+          #- aarch64-unknown-linux-gnu
           #- aarch64-unknown-linux-musl
-          - armv7-unknown-linux-gnueabihf
+          #- armv7-unknown-linux-gnueabihf
           #- armv7-unknown-linux-musleabihf
-          #- x86_64-unknown-linux-musl
+          - x86_64-unknown-linux-musl
     runs-on:           ubuntu-latest
+    container:         generalbeck/docker-cross-rust:${{matrix.target}}
     env:
       RUST_BACKTRACE:  full
     steps:
@@ -46,7 +47,6 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p $HOME/sccache
-          sudo chmod -R a+w $HOME/.cargo
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
@@ -68,15 +68,11 @@ jobs:
         with:
           path:        "$HOME/sccache"
           key:         sccache-${{ env['cache_hash'] }}
-      - name:          Install & start sccache for ${{ matrix.platform }}
-        shell:         pwsh
-        run:           pwsh .github/workflows/sccache.ps1 ${{ runner.os}}
       - name:          Sccache statistics
         run:           sccache --show-stats
       - name:          Checking ${{ matrix.target }}-${{ matrix.toolchain }}
         uses:          actions-rs/cargo@master
         with:
-          use-cross:   true
           command:     check
           args:        --target ${{ matrix.target }} --all --verbose
       - name:          Stop sccache
@@ -91,12 +87,13 @@ jobs:
           - stable
           - nightly
         target:        #List of [supported targets](https://github.com/rust-embedded/cross#supported-targets)
-          - aarch64-unknown-linux-gnu
+          #- aarch64-unknown-linux-gnu
           #- aarch64-unknown-linux-musl
-          - armv7-unknown-linux-gnueabihf
+          #- armv7-unknown-linux-gnueabihf
           #- armv7-unknown-linux-musleabihf
-          #- x86_64-unknown-linux-musl
+          - x86_64-unknown-linux-musl
     runs-on:           ubuntu-latest
+    container:         generalbeck/docker-cross-rust:${{matrix.target}}
     env:
       RUST_BACKTRACE:  full
     steps:
@@ -118,7 +115,6 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p $HOME/sccache
-          sudo chmod -R a+w $HOME/.cargo
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
@@ -140,15 +136,11 @@ jobs:
         with:
           path:        "$HOME/sccache"
           key:         sccache-${{ env['cache_hash'] }}
-      - name:          Install & start sccache for ${{ matrix.platform }}
-        shell:         pwsh
-        run:           pwsh .github/workflows/sccache.ps1 ${{ runner.os}}
       - name:          Sccache statistics
         run:           sccache --show-stats
       - name:          Testing ${{ matrix.target }}-${{ matrix.toolchain }}
         uses:          actions-rs/cargo@master
         with:
-          use-cross:   true
           command:     test
           args:        --target ${{ matrix.target }} --all --verbose
       - name:          Stop sccache
@@ -163,12 +155,13 @@ jobs:
           - stable
           - nightly
         target:        #List of [supported targets](https://github.com/rust-embedded/cross#supported-targets)
-          - aarch64-unknown-linux-gnu
+          #- aarch64-unknown-linux-gnu
           #- aarch64-unknown-linux-musl
-          - armv7-unknown-linux-gnueabihf
+          #- armv7-unknown-linux-gnueabihf
           #- armv7-unknown-linux-musleabihf
-          #- x86_64-unknown-linux-musl
+          - x86_64-unknown-linux-musl
     runs-on:           ubuntu-latest
+    container:         generalbeck/docker-cross-rust:${{matrix.target}}
     env:
       RUST_BACKTRACE:  full
       RUSTFLAGS:       "-C link-arg=-s" #Strip binaries
@@ -191,7 +184,6 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p $HOME/sccache
-          sudo chmod -R a+w $HOME/.cargo
         shell:         bash
       - name:          Cache cargo registry
         uses:          actions/cache@master
@@ -213,15 +205,11 @@ jobs:
         with:
           path:        "$HOME/sccache"
           key:         sccache-${{ env['cache_hash'] }}
-      - name:          Install & start sccache for ${{ matrix.platform }}
-        shell:         pwsh
-        run:           pwsh .github/workflows/sccache.ps1 ${{ runner.os}}
       - name:          Sccache statistics
         run:           sccache --show-stats
       - name:          Building ${{ matrix.target }}-${{ matrix.toolchain }}
         uses:          actions-rs/cargo@master
         with:
-          use-cross:   true
           command:     build
           args:        --target ${{ matrix.target }} --all --verbose --release
       - name:          Stop sccache
