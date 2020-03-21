@@ -28,7 +28,7 @@ jobs:
     runs-on:           ${{ matrix.platform }}
     env:
       RUST_BACKTRACE:  full
-      CARGO_HOME:      $HOME/.cargo
+      #CARGO_HOME:      $HOME/.cargo
     steps:
       - name:          Set default compiler
         if:            matrix.compiler == 'clang' && matrix.platform != 'windows-latest'
@@ -58,7 +58,7 @@ jobs:
         run:           |
           echo ::set-env name=cache_hash::${{ runner.os }}-${{ steps.toolchain.outputs.rustc_hash }}-${{ matrix.compiler }}-${{ hashFiles('**/Cargo.toml') }}
           mkdir -p {$HOME/sccache,$HOME/.cargo/git,$HOME/.cargo/registry}
-          echo ::set-env name=CARGO_HOME::$HOME/.cargo
+          #echo ::set-env name=CARGO_HOME::$HOME/.cargo
           echo "CARGO_HOME" $CARGO_HOME
           echo "RUSTUP_HOME" $RUSTUP_HOME
           chmod -Rс a+w $CARGO_HOME
