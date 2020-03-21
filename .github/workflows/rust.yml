@@ -35,10 +35,13 @@ jobs:
         run: |
           echo ::set-env name=CC::clang
           echo ::set-env name=CXX::clang++
+      - name:         Install sudo for windows
+        if: matrix.platform == 'windows-latest'
+        run: choco install sudo
       - name:          Install LLVM for Windows
         if:            matrix.platform == 'windows-latest'  && matrix.compiler == 'clang'
         run:           |
-          choco install llvm sudo
+          choco install llvm
           echo ::set-env name=CC::clang-cl.exe
           echo ::set-env name=CXX::clang-cl.exe
           refreshenv
