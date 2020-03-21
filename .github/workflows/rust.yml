@@ -21,7 +21,6 @@ jobs:
           - windows-latest
         toolchain:
           - stable
-          - beta
           - nightly
         compiler:
           - clang
@@ -84,7 +83,7 @@ jobs:
         with:
           command:     check
           toolchain:   ${{ matrix.toolchain }}
-          args:        --locked --all --release --verbose
+          args:        --all  --verbose
       - name:          Stop sccache
         if:            always()
         run:           sccache --stop-server
@@ -99,7 +98,6 @@ jobs:
           - windows-latest
         toolchain:
           - stable
-          - beta
           - nightly
         compiler:
           - clang
@@ -160,9 +158,15 @@ jobs:
       - name:          Testing ${{ matrix.platform }}-${{ matrix.toolchain }}
         uses:          actions-rs/cargo@master
         with:
+          command:     fmt
+          toolchain:   ${{ matrix.toolchain }}
+          args:        --all -- --check
+      - name:          Testing ${{ matrix.platform }}-${{ matrix.toolchain }}
+        uses:          actions-rs/cargo@master
+        with:
           command:     test
           toolchain:   ${{ matrix.toolchain }}
-          args:        --locked --all --release --verbose
+          args:        --all  --verbose
       - name:          Stop sccache
         if:            always()
         run:           sccache --stop-server
@@ -177,7 +181,6 @@ jobs:
           - windows-latest
         toolchain:
           - stable
-          - beta
           - nightly
         compiler:
           - clang
@@ -244,7 +247,7 @@ jobs:
         with:
           command:     build
           toolchain:   ${{ matrix.toolchain }}
-          args:        --locked --all --release --verbose
+          args:        --all  --verbose
       - name:          Stop sccache
         if:            always()
         run:           sccache --stop-server

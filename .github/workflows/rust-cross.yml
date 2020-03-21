@@ -78,7 +78,7 @@ jobs:
         with:
           use-cross:   true
           command:     check
-          args:        --target ${{ matrix.target }} --locked --all --release --verbose
+          args:        --target ${{ matrix.target }} --all --verbose
       - name:          Stop sccache
         if:            always()
         run:           sccache --stop-server
@@ -150,7 +150,7 @@ jobs:
         with:
           use-cross:   true
           command:     test
-          args:        --target ${{ matrix.target }} --locked --all --release --verbose
+          args:        --target ${{ matrix.target }} --all --verbose
       - name:          Stop sccache
         if:            always()
         run:           sccache --stop-server
@@ -161,7 +161,6 @@ jobs:
       matrix:
         toolchain:
           - stable
-          - beta
           - nightly
         target:        #List of [supported targets](https://github.com/rust-embedded/cross#supported-targets)
           - aarch64-unknown-linux-gnu
@@ -223,7 +222,7 @@ jobs:
         with:
           use-cross:   true
           command:     build
-          args:        --target ${{ matrix.target }} --locked --all --release --verbose
+          args:        --target ${{ matrix.target }} --all --verbose
       - name:          Stop sccache
         if:            always()
         run:           sccache --stop-server
